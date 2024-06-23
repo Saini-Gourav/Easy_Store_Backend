@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { createData, getData, updateData, deleteData, createLogin, getLogin, register, login, filterData } = require("../controller/User");
+const { createData, getData, updateData, deleteData, createLogin, getLogin, register, login, filterData, addItem } = require("../controller/User");
 
 const multer = require("multer");
 const { checkAuth } = require("../middleware/checkAuth");
@@ -35,7 +35,9 @@ userRouter.get("/getlogin",getLogin);
 userRouter.post("/register",register);
 userRouter.post("/login/auth",login);
 userRouter.get("/get/items/:category",checkAuth,filterData)
-// userRouter.get("/get/items/check/auth",checkAuth)
+
+// userRouter.post("/api/cart/add",upload.single("image"),addItem)
+userRouter.post("/api/cart/add",addItem)
 
 ////////////////////////
 

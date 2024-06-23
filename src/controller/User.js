@@ -4,8 +4,9 @@ const registerModel = require("../model/Register");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken")
 const secretkey = "gouravsaini";
+const cartItem = require("../model/cartItem")
 
-exports.createData = async (req, res, next) => {
+exports.createData = async (req, res) => {
   try {
     const { title, category, price } = req.body;
     // console.log(req.body);
@@ -199,7 +200,71 @@ exports.filterData = async (req, res) => {
   }
 };
 
+///////////////CartItems//////////
+
+
+// exports.addItem = async (req, res) => {
+//   try {
+//     const { title, category, price } = req.body;
+//     const file = req.file;
+
+//     const existingItem = await cartItem.findOne({ title: title });
+
+//     let user;
+
+//     if (!existingItem) {
+//       const newItem = {
+//         title,
+//         category,
+//         price,
+//         image: file.path,
+//         quantity: 1
+//       };
+//       user = await cartItem.create(newItem);
+//     } else {
+//       existingItem.quantity++;
+//       user = await existingItem.save();
+//     }
+
+//     res.status(200).json({ status: 200, message: "Successful added item", data: user });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(400).json({ status: 400, message: "catch bala chal raha abhi" });
+//   }
+// };
+
+////////////////////////below side fake ////////////////////
 
 
 
+exports.addItem = async (req, res) => {
+  try {
+    const { user_id, product_id, price, quantity, bill_created } = req.body;
+    console.log(req.body, "checkBody");
+
+    // Check if the product already exists
+    let existingProduct = await cartItem.findOne({ product_id });
+
+    if (existingProduct) {
+      // If the product exists, update the quantity
+      existingProduct.quantity += quantity;
+      await existingProduct.save();
+      res.status(200).json({ status: 200, message: "Quantity updated successfully", data: existingProduct });
+    } else {
+      // If the product doesn't exist, create a new entry
+      const newProduct = new cartItem({
+        user_id,
+        product_id,
+        price,
+        quantity,
+        bill_created
+      });
+      await newProduct.save();
+      res.status(200).json({ status: 200, message: "Product added successfully", data: newProduct });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ status: 400, message: "An error occurred while processing the request" });
+  }
+};
 
